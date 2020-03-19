@@ -2,10 +2,17 @@
 #include <TGUI/TGUI.hpp>
 #include <fstream>
 void Startpage(tgui::Gui& gui){
+
     tgui::Button::Ptr New = tgui::Button::create("New Character");
     New-> setSize("25%", "25%");
     New-> setPosition("25%", "50%");
     gui.add(New, "new");
+    
+    tgui::Button::Ptr Load = tgui::Button::create("Load Character");
+    Load-> setSize("25%", "25%");
+    Load-> setPosition("65%", "50%");
+    gui.add(Load, "load"); 
+    Load->connect("pressed", Loadstats, gui)    
 }
 void NewStats(tgui::Gui& gui){
     
@@ -15,7 +22,7 @@ void NewStats(tgui::Gui& gui){
     gui.add(Submit); 
 
     tgui::EditBox::Ptr name = tgui::EditBox::create();
-    name -> setDefaultText("Username");
+    name -> setDefaultText("Character name");
     name->setSize("20%" , "5%");
     name->setPosition("40%","35%"); 
     gui.add(name, "name");
@@ -32,6 +39,13 @@ void NewStats(tgui::Gui& gui){
     dexterity->setPosition("45%","45%");
     gui.add(dexterity, "dex");
 
+}
+void Loadstats(tgui::Gui& gui){
+    tgui::EditBox::Ptr savefile = tgui::EditBox::create();
+    savefile-> setDefaultText("Location of savefile");
+    savefile-> setSize("45%","25%");
+    savefile-> setPosition("35%","45%");
+    gui.add(savefile, "savefile");
 }
 int main()
 {
@@ -58,11 +72,12 @@ int main()
 		window.setView(sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(event.size.width),
 						                static_cast<float>(event.size.height))));
 		gui.setView(window.getView());
-	
-	    //if (event.type ==sf
+            	
 	    }
-            gui.handleEvent(event); // Pass the event to the widgets
-        }
+            gui.handleEvent(event); // Pass the event to the widg
+
+            
+	}
 
 
         window.clear();
