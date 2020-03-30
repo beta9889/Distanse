@@ -1,25 +1,35 @@
 #include <iostream>
 #include <TGUI/TGUI.hpp>
 #include <fstream>
-void Startpage(tgui::Gui& gui){
 
-    tgui::Button::Ptr New = tgui::Button::create("New Character");
-    New-> setSize("25%", "25%");
-    New-> setPosition("25%", "50%");
-    gui.add(New, "new");
-    
+
+void LoadStats(tgui::Gui& gui){
+
+    tgui::EditBox::Ptr savefile = tgui::EditBox::create();
+    savefile-> setDefaultText("Location of savefile");
+    savefile-> setSize("45%","25%");
+    savefile-> setPosition("35%","45%");
+    gui.add(savefile, "savefile");
+
     tgui::Button::Ptr Load = tgui::Button::create("Load Character");
-    Load-> setSize("25%", "25%");
-    Load-> setPosition("65%", "50%");
-    gui.add(Load, "load"); 
-    Load->connect("pressed", Loadstats, gui)    
+    Load->setPosition("55%", "55%");
+    Load->setSize("10%","5%");
+    gui.add(Load);
+
+//    Load->connect("pressed", makechar, std::ref(gui));
+
 }
+
+
 void NewStats(tgui::Gui& gui){
     
+
     tgui::Button::Ptr Submit = tgui::Button::create("Submit");
     Submit->setPosition("43%","60%");
     Submit->setSize("10%", "5%");
     gui.add(Submit); 
+
+  //  Submit->connect("pressed", SaveChar, name, str, dex,) 
 
     tgui::EditBox::Ptr name = tgui::EditBox::create();
     name -> setDefaultText("Character name");
@@ -40,18 +50,31 @@ void NewStats(tgui::Gui& gui){
     gui.add(dexterity, "dex");
 
 }
-void Loadstats(tgui::Gui& gui){
-    tgui::EditBox::Ptr savefile = tgui::EditBox::create();
-    savefile-> setDefaultText("Location of savefile");
-    savefile-> setSize("45%","25%");
-    savefile-> setPosition("35%","45%");
-    gui.add(savefile, "savefile");
+
+void Startpage(tgui::Gui& gui){
+
+
+    auto newButton = tgui::Button::create("New Character");
+    newButton-> setSize("25%", "25%");
+    newButton-> setPosition("25%", "50%");
+    gui.add(newButton);
+   
+    newButton->connect("pressed", NewStats,std::ref( gui));
+		   
+    auto Load = tgui::Button::create("Load Character");
+    Load-> setSize("25%", "25%");
+    Load-> setPosition("65%", "50%");
+    gui.add(Load);
+
+    Load->connect("pressed",LoadStats, std::ref(gui));
 }
+
 int main()
 {
-    sf::RenderWindow window{{800, 600}, "Window"};
-    tgui::Gui gui{window}; // Create the gui and attach it to the window
     
+    sf::RenderWindow window(sf::VideoMode(700,500), "WindowName");
+    tgui::Gui gui(window);
+
     try{
     Startpage(gui); 
     }
@@ -75,7 +98,7 @@ int main()
             	
 	    }
             gui.handleEvent(event); // Pass the event to the widg
-
+           // Load->connect("pressed", Loadstats, std::ref(gui))    
             
 	}
 
