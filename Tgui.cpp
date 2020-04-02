@@ -2,8 +2,11 @@
 #include <TGUI/TGUI.hpp>
 #include <fstream>
 
+void NewStats(tgui::Gui& gui);
+
 
 void LoadStats(tgui::Gui& gui){
+    gui.removeAllWidgets();
 
     tgui::EditBox::Ptr savefile = tgui::EditBox::create();
     savefile-> setDefaultText("Location of savefile");
@@ -15,6 +18,13 @@ void LoadStats(tgui::Gui& gui){
     Load->setPosition("55%", "55%");
     Load->setSize("10%","5%");
     gui.add(Load);
+    
+    auto  newButton = tgui::Button::create("New Character");
+    newButton-> setSize("25%", "25%");
+    newButton-> setPosition("25%", "50%");
+    gui.add(newButton);
+   
+    newButton->connect("pressed", NewStats,std::ref( gui));
 
 //    Load->connect("pressed", makechar, std::ref(gui));
 
@@ -22,7 +32,16 @@ void LoadStats(tgui::Gui& gui){
 
 
 void NewStats(tgui::Gui& gui){
+    gui.removeAllWidgets();
+
     
+    tgui::Button::Ptr Load = tgui::Button::create("Load Character");
+    Load-> setSize("25%", "25%");
+    Load-> setPosition("65%", "50%");
+    gui.add(Load);
+
+    Load->connect("pressed",LoadStats, std::ref(gui));
+
 
     tgui::Button::Ptr Submit = tgui::Button::create("Submit");
     Submit->setPosition("43%","60%");
