@@ -2,19 +2,29 @@
 #include <TGUI/TGUI.hpp>
 #include <fstream>
 
+void NewStats(tgui::Gui& gui);
+
 
 void LoadStats(tgui::Gui& gui){
+    gui.removeAllWidgets();
 
     tgui::EditBox::Ptr savefile = tgui::EditBox::create();
     savefile-> setDefaultText("Location of savefile");
-    savefile-> setSize("45%","25%");
+    savefile-> setSize("35%","10%");
     savefile-> setPosition("35%","45%");
     gui.add(savefile, "savefile");
 
     tgui::Button::Ptr Load = tgui::Button::create("Load Character");
-    Load->setPosition("55%", "55%");
-    Load->setSize("10%","5%");
+    Load->setPosition("55%", "65%");
+    Load->setSize("15%","10%");
     gui.add(Load);
+    
+    auto  newButton = tgui::Button::create("New Character");
+    newButton-> setSize("15%", "5%");
+    newButton-> setPosition("25%", "75%");
+    gui.add(newButton);
+   
+    newButton->connect("pressed", NewStats,std::ref( gui));
 
 //    Load->connect("pressed", makechar, std::ref(gui));
 
@@ -22,7 +32,16 @@ void LoadStats(tgui::Gui& gui){
 
 
 void NewStats(tgui::Gui& gui){
+    gui.removeAllWidgets();
+
     
+    tgui::Button::Ptr Load = tgui::Button::create("Load Character");
+    Load-> setSize("15%", "10%");
+    Load-> setPosition("25%", "75%");
+    gui.add(Load);
+
+    Load->connect("pressed",LoadStats, std::ref(gui));
+
 
     tgui::Button::Ptr Submit = tgui::Button::create("Submit");
     Submit->setPosition("43%","60%");
