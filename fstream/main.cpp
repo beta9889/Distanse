@@ -15,16 +15,20 @@ int main(){
     string input;
     cin >> input;
 
-    input >> file;
+    file << input;
     file.close();
 
+
+
+
     ifstream print;
-    print.open("text.txt");
+    print.open("afile.txt");
     input = "something different";
      
 
     print  >> input;
-    cout << "done : "<< print << endl;
+    cout << "done : ";
+    cout << input << endl;
 
     file.close();
     return 0;

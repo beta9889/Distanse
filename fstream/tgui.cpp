@@ -8,12 +8,12 @@ int main (){
 	ofstream outfile;
 	outfile.open("afile.txt");
 
-	cout << "name :";
+	cout << "name : ";
 	cin.getline(data, 100);
 
 	outfile << data <<endl;
 
-	cout << "enter your age";
+	cout << "enter your age : ";
 	cin >> data;
 	cin.ignore();
 
