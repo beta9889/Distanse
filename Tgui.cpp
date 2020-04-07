@@ -5,8 +5,19 @@
 void NewStats(tgui::Gui& gui);
 
 
+void LoadChar(ifstream savefile, tgui::Gui& gui, ){
+    gui.removeAllWidgets();
+    
+    savefile.open; 
+    
+
+    
+    
+}
+
 void LoadStats(tgui::Gui& gui){
     gui.removeAllWidgets();
+
 
     tgui::EditBox::Ptr savefile = tgui::EditBox::create();
     savefile-> setDefaultText("Location of savefile");
@@ -14,11 +25,15 @@ void LoadStats(tgui::Gui& gui){
     savefile-> setPosition("35%","45%");
     gui.add(savefile, "savefile");
 
+
     tgui::Button::Ptr Load = tgui::Button::create("Load Character");
     Load->setPosition("55%", "65%");
     Load->setSize("15%","10%");
     gui.add(Load);
     
+    Load->connect("pressed", Loadchar, savefile, std::ref( gui));
+
+
     auto  newButton = tgui::Button::create("New Character");
     newButton-> setSize("15%", "5%");
     newButton-> setPosition("25%", "75%");
