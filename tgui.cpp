@@ -28,30 +28,35 @@ void LoadChar(ifstream savefile, tgui::Gui& gui, ){
 */
 
 
-void SaveChar(tgui::EditBox::Ptr name, tgui::EditBox::Ptr str, tgui::EditBox::Ptr dex, tgui::Gui& gui){
+void SaveChar(tgui::EditBox::Ptr name, tgui::EditBox::Ptr str, 
+		tgui::EditBox::Ptr dex, tgui::Gui& gui){
+
 
     ofstream savefile;
     savefile.open("Saves.txt");
     
-    string endchar ="---------------------------------------------------------------------------";
 
-    savefile << endchar << endl;
-    savefile << name->getText().toAnsiString() << endl;
-    savefile << str->getText().toAnsiString()<< endl;
-    savefile << dex->getText().toAnsiString()<< endl;
-    savefile << endchar << endl;
+    savefile <<name->getText().toAnsiString() << ",";
+    savefile <<str->getText().toAnsiString()<<",";
+    savefile <<dex->getText().toAnsiString() << endl;
    
-    cout << "Character Saved";
+    cout << "Character Saved \n";
 
     savefile.close();
 
-    gui.removeAllWidgets();
+   // gui.removeAllWidgets();
+
+    auto confirm = tgui::ChildWindow:create();
+    confirm->setSize("65%","45%");
+    confirm->setPosition("45%","45%");
+    confirm->setTitle("");
+    gui.add(child);
 
     auto label = tgui::Label::create();
     label->setText("character saved");
     label->setPosition("30%","45%");
     label->setTextSize(15);
-    gui.add(label);
+    confirm->add(label);
 
 }
 
