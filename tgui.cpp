@@ -7,57 +7,93 @@
 #include <string>
 
 using namespace std;
-
+void Startpage(tgui::Gui& gui);
 void NewStats(tgui::Gui& gui);
 
-/*
-void LoadChar(ifstream savefile, tgui::Gui& gui, ){
+
+void LoadChar(tgui::Gui& gui){
     gui.removeAllWidgets();
     
-    savefile.open; 
+    ifstream savefile;
+    savefile.open("Saves.txt"); 
     string name;
-    savefile >> name;
+    getline(savefile, name);
 
     int strenght;
-    savefile >> strenght;
+    getline(savefile, strenght);
 
     int dexterity;
-    savefile >> dexterity;
-
+    getline(savefile, dexterity);
+    
+    cout<< dexterity << strenght << name << endl;
 }
-*/
+
 
 
 void SaveChar(tgui::EditBox::Ptr name, tgui::EditBox::Ptr str, 
 		tgui::EditBox::Ptr dex, tgui::Gui& gui){
 
+    string checkint = str->getText().toAnsiString();
+    if(bool has_only_didgets = (checkint.find_first_not_of("0123456789") != std::string::npos)){
+        checkint = dex->getText().toAnsiString();
+        if(bool has_only_didgets = (checkint.find_first_not_of("0123456789") != std::string::npos)){
+                
+        
+            auto child = tgui::ChildWindow::create();
+	//child->setRenderer(theme.getrendere("ChildWindow"));
+	    child->setSize("50%","50%");
+	    child->setPosition("40%","40%");
+	    gui.add(child);
+	
+	    tgui::Label::Ptr label = tgui::Label::create();
+        //label->setRenderer(theme.getRenderer("Label"));
+            label->setText("Strenght and Dexterity can only contain numbers.");
+            label->setPosition(30, 30);
+            label->setTextSize(15);
+            child->add(label);	
 
-    ofstream savefile;
-    savefile.open("Saves.txt");
-    
-
-    savefile <<name->getText().toAnsiString() << ",";
-    savefile <<str->getText().toAnsiString()<<",";
-    savefile <<dex->getText().toAnsiString() << endl;
+	    auto close = tgui::Button::create();
+        //close->setRenderer(theme.getRenderer("Button"));
+            close->setPosition(75, 70);
+            close->setText("OK");
+            close->setSize(100, 30);
+            close->connect("pressed", [=](){ child->setVisible(false); });
+            child->add(close); 
+			
+	}
+    }
+    else{
+        ofstream savefile;
+        savefile.open("Saves.txt", std::ofstream::app);
+        savefile <<name->getText().toAnsiString() << ",";
+        savefile <<str->getText().toAnsiString()<<",";
+        savefile <<dex->getText().toAnsiString() << endl;
    
-    cout << "Character Saved \n";
+        cout << "Character Saved \n";
+        savefile.close();
 
-    savefile.close();
-
-   // gui.removeAllWidgets();
-
+        gui.removeAllWidgets();
+/*
     auto confirm = tgui::ChildWindow:create();
     confirm->setSize("65%","45%");
     confirm->setPosition("45%","45%");
     confirm->setTitle("");
     gui.add(child);
+*/
+        auto label = tgui::Label::create();
+        label->setText("Character Saved");
+        label->setPosition("30%","45%");
+        label->setTextSize(15);
+        gui.add(label);
 
-    auto label = tgui::Label::create();
-    label->setText("character saved");
-    label->setPosition("30%","45%");
-    label->setTextSize(15);
-    confirm->add(label);
+        auto  newButton = tgui::Button::create("New Character");
+        newButton-> setSize("15%", "5%");
+        newButton-> setPosition("25%", "75%");
+        gui.add(newButton);
+   
+        newButton->connect("pressed", Startpage,std::ref( gui));
 
+    }
 }
 
 
@@ -130,12 +166,11 @@ void NewStats(tgui::Gui& gui){
     gui.add(Submit); 
 
     Submit->connect("pressed", SaveChar, name, strenght, dexterity, std::ref(gui)); 
-
-
 }
 
 
 void Startpage(tgui::Gui& gui){
+    gui.removeAllWidgets();
 
 
     auto newButton = tgui::Button::create("New Character");
