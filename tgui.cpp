@@ -1,31 +1,68 @@
-//
-//Cat readable
-//
 #include <iostream>
 #include <TGUI/TGUI.hpp>
 #include <fstream>
 #include <string>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctime>
 
 using namespace std;
 void Startpage(tgui::Gui& gui);
 void NewStats(tgui::Gui& gui);
 
+class Character{
+	public:
+	string chara;
+	int strenght;
+	int dexterity;
+	int health;
 
+	void setstats(string name, int str, int dex){
+
+		chara = name; 
+		strenght = str;
+		dexterity = dex;
+       		srand((unsigned)time(0));
+		health = strenght +(rand()%8); 	
+
+	};
+};
+
+/*
+
+int Character::Hcalc(int strenght){
+	srand((unsigned) time(0));
+	
+	return strenght + (rand() % 8);
+
+}
+
+*/
 void LoadChar(tgui::Gui& gui){
     gui.removeAllWidgets();
     
     fstream savefile;
     savefile.open("Saves.txt", fstream::in | fstream::out); 
+    
+    Character person;
     string name;
     savefile >> name;
+    int str;
+    savefile >> str;
+    int dex;
+    savefile >> dex;
+    person.setstats(name,str,dex);
 
-    int strenght;
-    savefile >> strenght;
+    cout<< person.dexterity << endl<<person.chara <<endl<< person.strenght <<endl<< person.health << endl;
 
-    int dexterity;
-    savefile >> dexterity;
-    
-    cout<< dexterity << strenght << name << endl;
+
+
+        auto  newButton = tgui::Button::create("Back to start");
+        newButton-> setSize("40%", "25%");
+        newButton-> setPosition("25%", "75%");
+        gui.add(newButton);
+   
+        newButton->connect("pressed", Startpage,std::ref( gui));
 }
 
 
