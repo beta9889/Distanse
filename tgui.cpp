@@ -7,62 +7,85 @@
 #include <ctime>
 
 using namespace std;
+
 void Startpage(tgui::Gui& gui);
 void NewStats(tgui::Gui& gui);
+void LoadStats(tgui::Gui& gui);
 
 class Character{
-	public:
-	string chara;
-	int strenght;
-	int dexterity;
-	int health;
+public:
+    string name;
+    int strenght;
+    int dexterity;
+    void setstats(string chara, int str, int dex){
 
-	void setstats(string name, int str, int dex){
+        name = chara; 
+        strenght = str;
+        dexterity = dex;
+        srand((unsigned)time(0));
+        health = strenght +(rand()%8); 	
 
-		chara = name; 
-		strenght = str;
-		dexterity = dex;
-       		srand((unsigned)time(0));
-		health = strenght +(rand()%8); 	
+    }
+    void showstats(){
 
-	};
+        cout<< dexterity << endl 
+		<<name <<endl
+		<< strenght <<endl
+		<< health << endl<<"-----------\n";
+    }
+protected:
+    int health;
 };
 
-/*
 
-int Character::Hcalc(int strenght){
-	srand((unsigned) time(0));
-	
-	return strenght + (rand() % 8);
-
-}
-
-*/
-void LoadChar(tgui::Gui& gui){
-    gui.removeAllWidgets();
+void LoadChar(tgui::Gui& gui, tgui::EditBox::Ptr load){
     
     fstream savefile;
     savefile.open("Saves.txt", fstream::in | fstream::out); 
     
     Character person;
     string name;
-    savefile >> name;
+    string peep;
+    peep = load->getText().toAnsiString();	
+
+    while (peep!=name){
+        savefile >> name;
+    }
+
     int str;
     savefile >> str;
     int dex;
     savefile >> dex;
     person.setstats(name,str,dex);
 
-    cout<< person.dexterity << endl<<person.chara <<endl<< person.strenght <<endl<< person.health << endl;
+    person.showstats();
 
+ 
+    auto child = tgui::ChildWindow::create();
+    child->setSize("50%","50%");
+    child->setPosition("40%","40%");
+    gui.add(child);
+	
+    tgui::Label::Ptr label = tgui::Label::create();
+    label->setText(person.name);
+    label->setPosition(30, 30);
+    label->setTextSize(15);
+    child->add(label);	
 
-
-        auto  newButton = tgui::Button::create("Back to start");
-        newButton-> setSize("40%", "25%");
-        newButton-> setPosition("25%", "75%");
-        gui.add(newButton);
+    auto close = tgui::Button::create();
+    close->setPosition(75, 70);
+    close->setText("OK");
+    close->setSize(100, 30);
+    close->connect("pressed", [=](){ child->setVisible(false); });
+    child->add(close); 
+/*
+    auto  newButton = tgui::Button::create("Back to start");
+    newButton-> setSize("40%", "25%");
+    newButton-> setPosition("25%", "75%");
+    gui.add(newButton);
    
-        newButton->connect("pressed", Startpage,std::ref( gui));
+    newButton->connect("pressed", Startpage,std::ref( gui));
+*/
 }
 
 
@@ -71,26 +94,23 @@ void SaveChar(tgui::EditBox::Ptr name, tgui::EditBox::Ptr str,
 		tgui::EditBox::Ptr dex, tgui::Gui& gui){
 
     string checkint = str->getText().toAnsiString();
-    if(bool has_only_didgets = (checkint.find_first_not_of("0123456789") != std::string::npos)){
+    if(bool has_only_didgets = (checkint.find_first_not_of("0123456789") != string::npos)){
         checkint = dex->getText().toAnsiString();
-        if(bool has_only_didgets = (checkint.find_first_not_of("0123456789") != std::string::npos)){
+        if(bool has_only_didgets = (checkint.find_first_not_of("0123456789") != string::npos)){
                 
         
             auto child = tgui::ChildWindow::create();
-	//child->setRenderer(theme.getrendere("ChildWindow"));
 	    child->setSize("50%","50%");
 	    child->setPosition("40%","40%");
 	    gui.add(child);
 	
 	    tgui::Label::Ptr label = tgui::Label::create();
-        //label->setRenderer(theme.getRenderer("Label"));
             label->setText("Strenght and Dexterity can only \n contain numbers.");
             label->setPosition(30, 30);
             label->setTextSize(15);
             child->add(label);	
 
 	    auto close = tgui::Button::create();
-        //close->setRenderer(theme.getRenderer("Button"));
             close->setPosition(75, 70);
             close->setText("OK");
             close->setSize(100, 30);
@@ -141,9 +161,9 @@ void LoadStats(tgui::Gui& gui){
     tgui::Button::Ptr Load = tgui::Button::create("Load Character");
     Load->setPosition("55%", "65%");
     Load->setSize("15%","10%");
-    gui.add(Load);
+    gui.add(Load,"Load");
     
-    Load->connect("pressed", LoadChar, std::ref(gui));
+    Load->connect("pressed", LoadChar, std::ref(gui), savefile);
 
 
     auto  newButton = tgui::Button::create("New Character");
@@ -152,8 +172,6 @@ void LoadStats(tgui::Gui& gui){
     gui.add(newButton);
    
     newButton->connect("pressed", NewStats,std::ref( gui));
-
-//    Load->connect("pressed", makechar, std::ref(gui));
 
 }
 
@@ -222,7 +240,7 @@ void Startpage(tgui::Gui& gui){
 
 int main(){
     
-    sf::RenderWindow window(sf::VideoMode(700,500), "WindowName");
+    sf::RenderWindow window(sf::VideoMode(700,500), "Baby game creator");
     tgui::Gui gui(window);
 
     try{
