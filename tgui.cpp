@@ -14,16 +14,16 @@ void NewStats(tgui::Gui& gui);
 void LoadChar(tgui::Gui& gui){
     gui.removeAllWidgets();
     
-    ifstream savefile;
-    savefile.open("Saves.txt"); 
+    fstream savefile;
+    savefile.open("Saves.txt", fstream::in | fstream::out); 
     string name;
-    getline(savefile, name);
+    savefile >> name;
 
     int strenght;
-    getline(savefile, strenght);
+    savefile >> strenght;
 
     int dexterity;
-    getline(savefile, dexterity);
+    savefile >> dexterity;
     
     cout<< dexterity << strenght << name << endl;
 }
@@ -47,7 +47,7 @@ void SaveChar(tgui::EditBox::Ptr name, tgui::EditBox::Ptr str,
 	
 	    tgui::Label::Ptr label = tgui::Label::create();
         //label->setRenderer(theme.getRenderer("Label"));
-            label->setText("Strenght and Dexterity can only contain numbers.");
+            label->setText("Strenght and Dexterity can only \n contain numbers.");
             label->setPosition(30, 30);
             label->setTextSize(15);
             child->add(label);	
@@ -65,29 +65,23 @@ void SaveChar(tgui::EditBox::Ptr name, tgui::EditBox::Ptr str,
     else{
         ofstream savefile;
         savefile.open("Saves.txt", std::ofstream::app);
-        savefile <<name->getText().toAnsiString() << ",";
-        savefile <<str->getText().toAnsiString()<<",";
+        savefile <<name->getText().toAnsiString() << " ";
+        savefile <<str->getText().toAnsiString()<<" ";
         savefile <<dex->getText().toAnsiString() << endl;
    
         cout << "Character Saved \n";
         savefile.close();
 
         gui.removeAllWidgets();
-/*
-    auto confirm = tgui::ChildWindow:create();
-    confirm->setSize("65%","45%");
-    confirm->setPosition("45%","45%");
-    confirm->setTitle("");
-    gui.add(child);
-*/
-        auto label = tgui::Label::create();
+        
+	auto label = tgui::Label::create();
         label->setText("Character Saved");
         label->setPosition("30%","45%");
         label->setTextSize(15);
         gui.add(label);
 
-        auto  newButton = tgui::Button::create("New Character");
-        newButton-> setSize("15%", "5%");
+        auto  newButton = tgui::Button::create("Back to start");
+        newButton-> setSize("40%", "25%");
         newButton-> setPosition("25%", "75%");
         gui.add(newButton);
    
@@ -112,7 +106,7 @@ void LoadStats(tgui::Gui& gui){
     Load->setSize("15%","10%");
     gui.add(Load);
     
-//    Load->connect("pressed", Loadchar, savefile, std::ref( gui));
+    Load->connect("pressed", LoadChar, std::ref(gui));
 
 
     auto  newButton = tgui::Button::create("New Character");
