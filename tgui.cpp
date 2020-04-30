@@ -15,8 +15,6 @@ void LoadStats(tgui::Gui& gui);
 class Character{
 public:
     string name;
-    int strenght;
-    int dexterity;
     void setstats(string chara, int str, int dex){
 
         name = chara; 
@@ -27,19 +25,54 @@ public:
 
     }
     void showstats(){
-
-        cout<< dexterity << endl 
-		<<name <<endl
+        cout << name << endl
+		<< dexterity << endl 
 		<< strenght <<endl
 		<< health << endl<<"-----------\n";
     }
-    void changehealth(int dmg){
+    void changehealth(int dmg, tgui::Gui& gui){
         health = health - dmg;
+	if (health==0){gameover(std::ref(gui));}
     }
-protected:
+private:
     int health;
+    int strenght;
+    int dexterity;
+
+    void gameover(tgui::Gui& gui){
+    
+    auto over = tgui::ChildWindow::create("Game Over");
+    over->setSize("50%","50%");
+    over->setPosition("40%","40%");
+    gui.add(over);
+	
+    tgui::Label::P3tr label = tgui::Label::create();
+    label->setText("You have died please try again");
+    label->setPosition(30, 30);
+    label->setTextSize(15);
+    over->add(label);	
+
+    auto close = tgui::Button::create();
+    close->setPosition(75, 70);
+    close->setText("OK");
+    close->setSize(100, 30);
+    close->connect("pressed", [=](){ over->setVisible(false); });
+    over->add(close); 
+    }
 };
 
+
+void Gamestart(tgui::Gui& gui){
+    auto gamew = tgui::ChildWindow::create(person.name);
+    gamew->setSize("80%","80%");
+    gui.add(gamew);
+
+    
+
+
+
+
+}
 
 void LoadChar(tgui::Gui& gui, tgui::EditBox::Ptr load){
     
@@ -73,9 +106,7 @@ void LoadChar(tgui::Gui& gui, tgui::EditBox::Ptr load){
     label->setText(person.name);
     label->setPosition(30, 30);
     label->setTextSize(15);
-    child->add(label);	
-
-
+    child->add(label);	 
 
     auto close = tgui::Button::create();
     close->setPosition(75, 70);
@@ -157,7 +188,7 @@ void LoadStats(tgui::Gui& gui){
     gui.removeAllWidgets();
 
     tgui::EditBox::Ptr savefile = tgui::EditBox::create();
-    savefile-> setDefaultText("Location of savefile");
+    savefile-> setDefaultText("Name of your character");
     savefile-> setSize("35%","10%");
     savefile-> setPosition("35%","45%");
     gui.add(savefile, "savefile");
@@ -179,7 +210,7 @@ void LoadStats(tgui::Gui& gui){
     newButton->connect("pressed", NewStats,std::ref( gui));
 
 }
-
+//blablabla testing makefile
 
 void NewStats(tgui::Gui& gui){
     gui.removeAllWidgets();
