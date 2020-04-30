@@ -33,6 +33,9 @@ public:
 		<< strenght <<endl
 		<< health << endl<<"-----------\n";
     }
+    void changehealth(int dmg){
+        health = health - dmg;
+    }
 protected:
     int health;
 };
@@ -48,9 +51,9 @@ void LoadChar(tgui::Gui& gui, tgui::EditBox::Ptr load){
     string peep;
     peep = load->getText().toAnsiString();	
 
-    while (peep!=name){
+    do{
         savefile >> name;
-    }
+    }while (peep!=name);
 
     int str;
     savefile >> str;
@@ -71,6 +74,8 @@ void LoadChar(tgui::Gui& gui, tgui::EditBox::Ptr load){
     label->setPosition(30, 30);
     label->setTextSize(15);
     child->add(label);	
+
+
 
     auto close = tgui::Button::create();
     close->setPosition(75, 70);
@@ -95,8 +100,8 @@ void SaveChar(tgui::EditBox::Ptr name, tgui::EditBox::Ptr str,
 
     string checkint = str->getText().toAnsiString();
     if(bool has_only_didgets = (checkint.find_first_not_of("0123456789") != string::npos)){
-        checkint = dex->getText().toAnsiString();
-        if(bool has_only_didgets = (checkint.find_first_not_of("0123456789") != string::npos)){
+  //      checkint = dex->getText().toAnsiString();
+    //    if(bool has_only_didgets = (checkint.find_first_not_of("0123456789") != string::npos)){
                 
         
             auto child = tgui::ChildWindow::create();
@@ -117,14 +122,14 @@ void SaveChar(tgui::EditBox::Ptr name, tgui::EditBox::Ptr str,
             close->connect("pressed", [=](){ child->setVisible(false); });
             child->add(close); 
 			
-	}
+//	}
     }
     else{
         ofstream savefile;
         savefile.open("Saves.txt", std::ofstream::app);
         savefile <<name->getText().toAnsiString() << " ";
         savefile <<str->getText().toAnsiString()<<" ";
-        savefile <<dex->getText().toAnsiString() << endl;
+        savefile <<dex->/*getValue()*/getText().toAnsiString() << endl;
    
         cout << "Character Saved \n";
         savefile.close();
@@ -207,7 +212,18 @@ void NewStats(tgui::Gui& gui){
     dexterity-> setSize("10%", "5%");
     dexterity->setPosition("45%","45%");
     gui.add(dexterity, "dexterity");
-
+/*
+    tgui::Slider::Ptr dexterity = tgui::Slider::create();
+    dexterity->setPosition("45", "50%");
+    //dexterity->setColor("Green");
+    dexterity->setSize("30%", "15%");
+    dexterity->setMinimum(0);
+    dexterity->setMaximum(20);	     
+    dexterity->setStep(1);
+    dexterity->setVerticalScroll(true);
+    dexterity->setChangeValueOnScroll(true);
+    gui.add(dexterity);
+*/
 
     tgui::Button::Ptr Submit = tgui::Button::create("Submit");
     Submit->setPosition("43%","60%");
