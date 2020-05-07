@@ -5,13 +5,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctime>
-
+#include "Character.h"
 using namespace std;
 
 void Startpage(tgui::Gui& gui);
 void NewStats(tgui::Gui& gui);
 void LoadStats(tgui::Gui& gui);
-
+/*
 class Character{
 public:
     string name;
@@ -61,7 +61,7 @@ private:
     }
 };
 
-
+*/
 void Gamestart(tgui::Gui& gui, Character person){
 
     auto gamew = tgui::ChildWindow::create(person.name);
