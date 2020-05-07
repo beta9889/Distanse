@@ -46,7 +46,7 @@ private:
     over->setPosition("40%","40%");
     gui.add(over);
 	
-    tgui::Label::P3tr label = tgui::Label::create();
+    tgui::Label::Ptr label = tgui::Label::create();
     label->setText("You have died please try again");
     label->setPosition(30, 30);
     label->setTextSize(15);
@@ -62,15 +62,11 @@ private:
 };
 
 
-void Gamestart(tgui::Gui& gui){
+void Gamestart(tgui::Gui& gui, Character person){
+
     auto gamew = tgui::ChildWindow::create(person.name);
     gamew->setSize("80%","80%");
     gui.add(gamew);
-
-    
-
-
-
 
 }
 
@@ -83,38 +79,51 @@ void LoadChar(tgui::Gui& gui, tgui::EditBox::Ptr load){
     string name;
     string peep;
     peep = load->getText().toAnsiString();	
-
+    int i = 0;
     do{
         savefile >> name;
-    }while (peep!=name);
+	i++;
+    }while (peep!=name && 10 > i);
+    if(peep == name){
+        int str;
+        savefile >> str;
+        int dex;
+        savefile >> dex;
+        person.setstats(name,str,dex);
 
-    int str;
-    savefile >> str;
-    int dex;
-    savefile >> dex;
-    person.setstats(name,str,dex);
-
-    person.showstats();
+        person.showstats();
 
  
-    auto child = tgui::ChildWindow::create();
-    child->setSize("50%","50%");
-    child->setPosition("40%","40%");
-    gui.add(child);
+        auto child = tgui::ChildWindow::create();
+        child->setSize("50%","50%");
+        child->setPosition("40%","40%");
+        gui.add(child);
 	
-    tgui::Label::Ptr label = tgui::Label::create();
-    label->setText(person.name);
-    label->setPosition(30, 30);
-    label->setTextSize(15);
-    child->add(label);	 
+        tgui::Label::Ptr label = tgui::Label::create();
+        label->setText(person.name);
+        label->setPosition(30, 30);
+        label->setTextSize(15);
+        child->add(label);	 
 
-    auto close = tgui::Button::create();
-    close->setPosition(75, 70);
-    close->setText("OK");
-    close->setSize(100, 30);
-    close->connect("pressed", [=](){ child->setVisible(false); });
-    child->add(close); 
-/*
+        auto close = tgui::Button::create();
+        close->setPosition(75, 70);
+        close->setText("OK");
+        close->setSize(100, 30);
+        close->connect("pressed", [=](){ child->setVisible(false); });
+        child->add(close); 
+    }
+    else{
+	    cout <<"No character named that\n";
+    gui.removeAllWidgets(); 
+
+    auto newButton = tgui::Button::create("New Character");
+    newButton-> setSize("15%", "5%");
+    newButton-> setPosition("25%", "75%");
+    gui.add(newButton);
+   
+    newButton->connect("pressed", NewStats,std::ref( gui));
+
+    /*
     auto  newButton = tgui::Button::create("Back to start");
     newButton-> setSize("40%", "25%");
     newButton-> setPosition("25%", "75%");
@@ -122,6 +131,7 @@ void LoadChar(tgui::Gui& gui, tgui::EditBox::Ptr load){
    
     newButton->connect("pressed", Startpage,std::ref( gui));
 */
+    }
 }
 
 
