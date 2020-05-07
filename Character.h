@@ -1,9 +1,10 @@
 
 #include <iostream>
 #include <string>
+#include <TGUI/TGUI.hpp>
 #ifndef Character_H
 #define Character_H
-
+using namespace std;
 class Character
 {
 public :
