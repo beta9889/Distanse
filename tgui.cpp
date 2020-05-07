@@ -5,18 +5,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctime>
-
+#include "Character.h"
 using namespace std;
 
 void Startpage(tgui::Gui& gui);
 void NewStats(tgui::Gui& gui);
 void LoadStats(tgui::Gui& gui);
-
+/*
 class Character{
 public:
     string name;
-    int strenght;
-    int dexterity;
     void setstats(string chara, int str, int dex){
 
         name = chara; 
@@ -27,16 +25,50 @@ public:
 
     }
     void showstats(){
-
-        cout<< dexterity << endl 
-		<<name <<endl
+        cout << name << endl
+		<< dexterity << endl 
 		<< strenght <<endl
 		<< health << endl<<"-----------\n";
     }
-protected:
+    void changehealth(int dmg, tgui::Gui& gui){
+        health = health - dmg;
+	if (health==0){gameover(std::ref(gui));}
+    }
+private:
     int health;
+    int strenght;
+    int dexterity;
+
+    void gameover(tgui::Gui& gui){
+    
+    auto over = tgui::ChildWindow::create("Game Over");
+    over->setSize("50%","50%");
+    over->setPosition("40%","40%");
+    gui.add(over);
+	
+    tgui::Label::Ptr label = tgui::Label::create();
+    label->setText("You have died please try again");
+    label->setPosition(30, 30);
+    label->setTextSize(15);
+    over->add(label);	
+
+    auto close = tgui::Button::create();
+    close->setPosition(75, 70);
+    close->setText("OK");
+    close->setSize(100, 30);
+    close->connect("pressed", [=](){ over->setVisible(false); });
+    over->add(close); 
+    }
 };
 
+*/
+void Gamestart(tgui::Gui& gui, Character person){
+
+    auto gamew = tgui::ChildWindow::create(person.name);
+    gamew->setSize("80%","80%");
+    gui.add(gamew);
+
+}
 
 void LoadChar(tgui::Gui& gui, tgui::EditBox::Ptr load){
     
@@ -47,38 +79,51 @@ void LoadChar(tgui::Gui& gui, tgui::EditBox::Ptr load){
     string name;
     string peep;
     peep = load->getText().toAnsiString();	
-
-    while (peep!=name){
+    int i = 0;
+    do{
         savefile >> name;
-    }
+	i++;
+    }while (peep!=name && 10 > i);
+    if(peep == name){
+        int str;
+        savefile >> str;
+        int dex;
+        savefile >> dex;
+        person.setstats(name,str,dex);
 
-    int str;
-    savefile >> str;
-    int dex;
-    savefile >> dex;
-    person.setstats(name,str,dex);
-
-    person.showstats();
+        person.showstats();
 
  
-    auto child = tgui::ChildWindow::create();
-    child->setSize("50%","50%");
-    child->setPosition("40%","40%");
-    gui.add(child);
+        auto child = tgui::ChildWindow::create();
+        child->setSize("50%","50%");
+        child->setPosition("40%","40%");
+        gui.add(child);
 	
-    tgui::Label::Ptr label = tgui::Label::create();
-    label->setText(person.name);
-    label->setPosition(30, 30);
-    label->setTextSize(15);
-    child->add(label);	
+        tgui::Label::Ptr label = tgui::Label::create();
+        label->setText(person.name);
+        label->setPosition(30, 30);
+        label->setTextSize(15);
+        child->add(label);	 
 
-    auto close = tgui::Button::create();
-    close->setPosition(75, 70);
-    close->setText("OK");
-    close->setSize(100, 30);
-    close->connect("pressed", [=](){ child->setVisible(false); });
-    child->add(close); 
-/*
+        auto close = tgui::Button::create();
+        close->setPosition(75, 70);
+        close->setText("OK");
+        close->setSize(100, 30);
+        close->connect("pressed", [=](){ child->setVisible(false); });
+        child->add(close); 
+    }
+    else{
+	    cout <<"No character named that\n";
+    gui.removeAllWidgets(); 
+
+    auto newButton = tgui::Button::create("New Character");
+    newButton-> setSize("15%", "5%");
+    newButton-> setPosition("25%", "75%");
+    gui.add(newButton);
+   
+    newButton->connect("pressed", NewStats,std::ref( gui));
+
+    /*
     auto  newButton = tgui::Button::create("Back to start");
     newButton-> setSize("40%", "25%");
     newButton-> setPosition("25%", "75%");
@@ -86,6 +131,7 @@ void LoadChar(tgui::Gui& gui, tgui::EditBox::Ptr load){
    
     newButton->connect("pressed", Startpage,std::ref( gui));
 */
+    }
 }
 
 
@@ -95,8 +141,8 @@ void SaveChar(tgui::EditBox::Ptr name, tgui::EditBox::Ptr str,
 
     string checkint = str->getText().toAnsiString();
     if(bool has_only_didgets = (checkint.find_first_not_of("0123456789") != string::npos)){
-        checkint = dex->getText().toAnsiString();
-        if(bool has_only_didgets = (checkint.find_first_not_of("0123456789") != string::npos)){
+  //      checkint = dex->getText().toAnsiString();
+    //    if(bool has_only_didgets = (checkint.find_first_not_of("0123456789") != string::npos)){
                 
         
             auto child = tgui::ChildWindow::create();
@@ -117,14 +163,14 @@ void SaveChar(tgui::EditBox::Ptr name, tgui::EditBox::Ptr str,
             close->connect("pressed", [=](){ child->setVisible(false); });
             child->add(close); 
 			
-	}
+//	}
     }
     else{
         ofstream savefile;
         savefile.open("Saves.txt", std::ofstream::app);
         savefile <<name->getText().toAnsiString() << " ";
         savefile <<str->getText().toAnsiString()<<" ";
-        savefile <<dex->getText().toAnsiString() << endl;
+        savefile <<dex->/*getValue()*/getText().toAnsiString() << endl;
    
         cout << "Character Saved \n";
         savefile.close();
@@ -152,7 +198,7 @@ void LoadStats(tgui::Gui& gui){
     gui.removeAllWidgets();
 
     tgui::EditBox::Ptr savefile = tgui::EditBox::create();
-    savefile-> setDefaultText("Location of savefile");
+    savefile-> setDefaultText("Name of your character");
     savefile-> setSize("35%","10%");
     savefile-> setPosition("35%","45%");
     gui.add(savefile, "savefile");
@@ -174,7 +220,7 @@ void LoadStats(tgui::Gui& gui){
     newButton->connect("pressed", NewStats,std::ref( gui));
 
 }
-
+//blablabla testing makefile
 
 void NewStats(tgui::Gui& gui){
     gui.removeAllWidgets();
@@ -207,7 +253,18 @@ void NewStats(tgui::Gui& gui){
     dexterity-> setSize("10%", "5%");
     dexterity->setPosition("45%","45%");
     gui.add(dexterity, "dexterity");
-
+/*
+    tgui::Slider::Ptr dexterity = tgui::Slider::create();
+    dexterity->setPosition("45", "50%");
+    //dexterity->setColor("Green");
+    dexterity->setSize("30%", "15%");
+    dexterity->setMinimum(0);
+    dexterity->setMaximum(20);	     
+    dexterity->setStep(1);
+    dexterity->setVerticalScroll(true);
+    dexterity->setChangeValueOnScroll(true);
+    gui.add(dexterity);
+*/
 
     tgui::Button::Ptr Submit = tgui::Button::create("Submit");
     Submit->setPosition("43%","60%");
